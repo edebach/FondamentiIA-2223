@@ -52,7 +52,24 @@ def breadth_first_search(
     successor_fn,
     cost_fn
 ):
-    pass
+    initial_node= Node(initial_state, path_cost=0, action=None, parent=None)
+    explored = set()
+
+    coda=[initial_node]
+
+    while coda:
+        nodo = coda.pop(0)
+        if (goal_test(nodo.state)):
+            return nodo
+        for action, successor_state in successor_fn(nodo.state):
+            new_cost = nodo.path_cost + cost_fn(action)
+            new_node = Node(successor_state, new_cost, action=action, parent=nodo)
+
+            if new_node not in explored:
+                coda.append(new_node)
+                explored.add(new_node.state)
+    return None
+
 
 def uniform_cost_search(
     initial_state,
@@ -60,7 +77,29 @@ def uniform_cost_search(
     successor_fn,
     cost_fn,
 ):
-    pass
+    initial_node= Node(initial_state, path_cost=0, action=None, parent=None)
+    coda = [(0, initial_node)]
+    explored = set()
+
+    while coda:
+        _, nodo = coda.pop(0)
+        if goal_test(nodo.state):
+            return nodo
+        if nodo.state not in explored:
+            explored.add(nodo.state)
+            for action, successor in successor_fn(nodo.state):
+                cost = nodo.path_cost + cost_fn(action)
+                new_nodo = Node(successor, cost, action, nodo)
+                i = 0
+                while i < len(coda) and cost > coda[i][0]:
+                    i += 1
+                coda.insert(i, (cost, new_nodo))
+    return None
+
+
+
+    
+    
 
 def depth_first_search(
     initial_state,
@@ -68,7 +107,22 @@ def depth_first_search(
     successor_fn,
     cost_fn
 ):
-    pass
+    initial_node= Node(initial_state, path_cost=0, action=None, parent=None)
+    coda = [(initial_node)]
+    explored = set()
+    while coda:
+        nodo = coda.pop()
+        if goal_test(nodo.state):
+            return nodo
+        if nodo.state not in explored:
+            explored.add(nodo.state)
+            for action, successor in successor_fn(nodo.state):
+                cost = nodo.path_cost + 1
+                new_nodo = Node(successor, cost, action, nodo)
+                coda.append(new_nodo)
+    return None
+
+
 
 
 # Implementation (grid world, rendering, main)
